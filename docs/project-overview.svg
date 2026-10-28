@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640">
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#101d44"/><stop offset="1" stop-color="#09101e"/></linearGradient></defs>
+<rect width="1280" height="640" rx="24" fill="url(#bg)"/>
+<g font-family="Segoe UI,Arial,sans-serif"><text x="72" y="83" fill="#7cf6c3" font-size="18" letter-spacing="4">GENERATIVE AI / STARTUP STRATEGY</text>
+<text x="72" y="155" fill="#edf3ff" font-size="48" font-weight="700">Startup Brief Agent</text><text x="72" y="198" fill="#aabddd" font-size="23">From an early idea to a structured business brief.</text>
+<rect x="72" y="255" width="310" height="220" rx="18" fill="#182747" stroke="#35496e"/><text x="100" y="300" fill="#7cf6c3" font-size="17">01 / INPUT</text><text x="100" y="345" fill="white" font-size="27">Your startup idea</text><text x="100" y="385" fill="#aabddd" font-size="19">Problem + audience</text><text x="100" y="419" fill="#aabddd" font-size="19">Context + constraints</text>
+<path d="M399 365h45m-12-10 12 10-12 10" fill="none" stroke="#7cf6c3" stroke-width="3"/>
+<rect x="461" y="255" width="310" height="220" rx="18" fill="#182747" stroke="#35496e"/><text x="489" y="300" fill="#7cf6c3" font-size="17">02 / GENERATE</text><text x="489" y="345" fill="white" font-size="27">LangChain + Ollama</text><text x="489" y="385" fill="#aabddd" font-size="19">Structured startup prompt</text><text x="489" y="419" fill="#aabddd" font-size="19">Selected language model</text>
+<path d="M788 365h45m-12-10 12 10-12 10" fill="none" stroke="#7cf6c3" stroke-width="3"/>
+<rect x="850" y="255" width="358" height="220" rx="18" fill="#182747" stroke="#35496e"/><text x="878" y="300" fill="#7cf6c3" font-size="17">03 / EXPLORE</text><text x="878" y="345" fill="white" font-size="27">Business brief</text><text x="878" y="385" fill="#aabddd" font-size="19">Market / business model / GTM</text><text x="878" y="419" fill="#aabddd" font-size="19">Projections / risks / milestones</text>
+<text x="72" y="550" fill="#edf3ff" font-size="20">Python + browser UI</text><text x="72" y="587" fill="#8599ba" font-size="17">Project overview illustration · Generated drafts require independent verification</text></g></svg>

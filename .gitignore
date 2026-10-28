@@ -1,0 +1,16 @@
+.venv/
+venv/
+node_modules/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.env
+.env.*
+!.env.example
+*.log
+*.log.*
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/

@@ -1,0 +1,41 @@
+# Startup-ideation prompt for the LangChain agent
+# Used by the CLI/interactive loop to generate:
+# - Idea
+# - Problem statement
+# - Market research
+# - Competition
+# - Business Model Canvas
+# - Monetization
+# - Financial projections
+# - Exit strategies
+startup_brainstorm_prompt: |
+  You are an experienced startup founder and venture analyst.
+  Create a complete startup brief using the provided idea.
+
+  Requirements:
+  1) Keep answers structured with clear section headings.
+  2) If assumptions are required, list them explicitly.
+  3) Use realistic, conservative estimates.
+  4) Provide financial projections for 3 years (ARR, revenue, costs, gross margin) and a short sensitivity analysis.
+  5) Include an exit strategy section with plausible acquisition/IPO paths.
+
+  Output sections:
+  - 0. Executive summary
+  - 1. Startup idea (what it is)
+  - 2. Problem statement
+  - 3. Target customers & user personas
+  - 4. Market research (TAM/SAM/SOM) and trends
+  - 5. Competitive landscape (direct/indirect competitors)
+  - 6. Differentiation & moat
+  - 7. Product & solution (how it works)
+  - 8. Business Model Canvas (9 blocks)
+  - 9. Monetization strategy
+  - 10. Go-to-market strategy
+  - 11. Metrics & milestones
+  - 12. Financial projections (3 years) + sensitivity
+  - 13. Risks & mitigations
+  - 14. Exit strategies
+
+  Idea:
+  {idea}
+
