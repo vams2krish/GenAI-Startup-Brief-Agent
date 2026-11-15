@@ -1,13 +1,35 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Brief Studio — Startup planning workspace</title><link rel="stylesheet" href="./styles.css"><script type="module" src="./app.js"></script></head>
 <body><header><div class="shell nav"><a class="brand" href="./"><b>✳</b> Brief Studio</a><span id="mode" class="badge">◉ Demo workspace</span></div></header>
-<main class="shell"><section class="hero"><p class="label">BRIEF STUDIO / WORKSPACE</p><h1>Give your idea<br><em>a first draft.</em></h1><p>Turn a rough startup idea into a structured brief you can critique, share, and build on.</p><span class="star" aria-hidden="true">✳</span></section>
-<div class="workspace"><section class="card"><p class="label">01 / INPUT</p><h2>Shape your idea</h2><p>Start with the problem and who has it.</p>
+<main class="shell"><section class="hero"><h1>Give your idea<br><em>a first draft.</em></h1><p>Turn a rough startup idea into a structured brief you can critique, share, and build on.</p><a class="hero-link" href="#examples">Explore real examples ↓</a></section>
+<div class="workspace" id="workspace"><section class="card"><h2>Shape your idea</h2><p>Start with the problem and who has it.</p>
 <form id="form"><label for="idea">Startup idea <small id="count">0 / 3,000</small></label><textarea id="idea" required maxlength="3000" rows="4" placeholder="An inventory assistant for independent coffee shops…"></textarea>
 <label for="extra">Additional context <small>Optional</small></label><textarea id="extra" maxlength="2000" rows="3" placeholder="Budget, audience, constraints, or what you’ve tried"></textarea>
 <div id="model-field" hidden><label for="model">Ollama model</label><select id="model"></select></div>
-<button class="primary" id="generate">Generate brief <span aria-hidden="true">↗</span></button><button type="button" id="example">Try an example</button></form><p id="note" class="fine">Interactive demo · Sample content. No model call.</p></section>
-<section class="card"><p class="label">02 / OUTPUT</p><h2>Your startup brief</h2><p id="status" role="status">Ready when you are.</p><p id="error" role="alert" hidden></p>
+<button class="primary" id="generate">Generate brief <span aria-hidden="true">↗</span></button><button type="button" id="example">Load a starter idea</button></form><p id="note" class="fine">Interactive demo · Sample content. No model call.</p></section>
+<section class="card"><h2>Your startup brief</h2><p id="status" role="status">Ready when you are.</p><p id="error" role="alert" hidden></p>
 <div id="empty"><span aria-hidden="true">▤</span><h3>Make the idea tangible</h3><p>Your brief will appear here. Use it to identify assumptions and decide what to test first.</p></div>
 <div id="actions" hidden><button id="copy">Copy brief</button><button id="download">Download .md</button></div><article id="result" hidden></article></section></div>
+<section id="examples" class="examples" aria-labelledby="examples-title">
+  <h2 id="examples-title">Real startup examples</h2>
+  <p>See how founders tested an idea, then use the same approach for your own brief. Photos illustrate each category.</p>
+  <div class="example-grid">
+    <article class="card case">
+      <img src="./photos/hosting.jpg" width="800" height="450" loading="lazy" alt="Living room with a sofa and natural light">
+      <div class="case-body"><p class="label">MARKETPLACE</p><h3>Airbnb</h3>
+        <p>In 2007, two founders hosted three travelers attending a San Francisco design conference.</p>
+        <details><summary>What you can apply</summary><p>Before building a marketplace, try arranging the first few bookings by hand around one event. Ask guests and hosts what would make them book or list again.</p></details>
+        <div class="case-actions"><button type="button" data-example="airbnb">Use marketplace idea</button><a href="https://news.airbnb.com/airbnb-celebrates-half-a-billion-guest-arrivals">Founder story ↗</a></div>
+      </div>
+    </article>
+    <article class="card case">
+      <img src="./photos/scheduling.jpg" width="800" height="450" loading="lazy" alt="People working together at a laptop">
+      <div class="case-body"><p class="label">SOFTWARE</p><h3>Buffer</h3>
+        <p>Founder Joel Gascoigne used a short landing page to test interest in scheduling tweets before building the first version.</p>
+        <details><summary>What you can apply</summary><p>Describe one scheduling problem on a landing page. Show what a paid plan might include and ask interested visitors to join a pilot.</p></details>
+        <div class="case-actions"><button type="button" data-example="buffer">Use scheduling idea</button><a href="https://buffer.com/resources/idea-to-paying-customers-in-7-weeks-how-we-did-it/">Founder story ↗</a></div>
+      </div>
+    </article>
+  </div>
+</section>
 <footer><strong>Brief Studio</strong><span>Validate generated claims before making decisions.</span><a href="https://github.com/vams2krish/GenAI-Startup-Brief-Agent">View source ↗</a></footer></main></body></html>

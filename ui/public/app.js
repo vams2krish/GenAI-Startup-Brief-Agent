@@ -3,12 +3,33 @@ const idea = el('idea'), extra = el('extra'), status = el('status');
 let brief = '', local = false;
 const count = () => el('count').textContent = idea.value.length.toLocaleString('en-US') + ' / 3,000';
 idea.addEventListener('input',count);
-el('example').onclick = () => {
-  idea.value = 'A scheduling assistant for independent fitness coaches.';
-  extra.value = 'Start with solo coaches who use spreadsheets. Test a paid pilot before building integrations.';
-  count();
-  idea.focus();
+const examples = {
+  starter: ['A scheduling assistant for independent fitness coaches.',
+    'Start with solo coaches who use spreadsheets. Test a paid pilot before building integrations.'],
+  airbnb: ['An event-stay marketplace matching local hosts with conference attendees.',
+    'Start with one neighborhood and one event. Arrange the first bookings manually and track repeat interest from hosts and guests. Inspired by Airbnb’s first hosted stays.'],
+  buffer: ['A social post scheduler for independent creators who publish in batches.',
+    'Test interest with a landing page that describes the workflow and shows a paid plan. Invite visitors to a pilot before building integrations. Inspired by Buffer’s early landing-page test.']
 };
+function loadExample(key) {
+  const example = examples[key];
+  if (!example) return;
+  if ((idea.value.trim() || extra.value.trim()) &&
+      !examplesMatchDraft() && !window.confirm('Replace your current idea and context with this example?')) return;
+  [idea.value, extra.value] = example;
+  count();
+  el('error').hidden = true;
+  idea.focus({preventScroll:true});
+  el('workspace').scrollIntoView({block:'start'});
+}
+function examplesMatchDraft() {
+  return Object.values(examples).some(([input, notes]) => idea.value === input && extra.value === notes);
+}
+el('example').onclick = () => loadExample('starter');
+for (const button of document.querySelectorAll('[data-example]')) {
+  button.addEventListener('click', () => loadExample(button.dataset.example));
+}
+
 const configReady = fetch('./api/config',{signal:AbortSignal.timeout(2500)}).then(async response => {
   if (!response.ok) return;
   const {models} = await response.json();

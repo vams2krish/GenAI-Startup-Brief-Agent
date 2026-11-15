@@ -4,7 +4,7 @@
 
 Turn an early startup idea into a structured planning brief. The public demo uses sample content and makes no model calls. Run locally with Ollama for a brief tailored to your idea.
 
-![Desktop workspace](docs/screenshots/01-workspace.png)
+![Brief Studio desktop workspace and photographed startup examples](docs/screenshots/07-real-examples.png)
 
 ## Features
 
@@ -13,13 +13,13 @@ Turn an early startup idea into a structured planning brief. The public demo use
 - Copy the brief or download Markdown. A failed request keeps the previous brief available.
 - Generate a brief from the terminal or use the general chat CLI.
 
-## Screenshots
+## Real examples and screenshots
 
-| Example brief | Markdown export |
-| --- | --- |
-| ![Example brief](docs/screenshots/02-example-brief.png) | ![Markdown export](docs/screenshots/03-export.png) |
+Explore [Airbnb’s first hosted stays](https://news.airbnb.com/airbnb-celebrates-half-a-billion-guest-arrivals) and [Buffer’s landing-page test](https://buffer.com/resources/idea-to-paying-customers-in-7-weeks-how-we-did-it/). Each case includes an experiment you can adapt and a starter idea you can load into the form.
 
-[Mobile workspace](docs/screenshots/04-mobile.png) · [Live Ollama brief](docs/screenshots/05-local-ollama.png) · [Error recovery](docs/screenshots/06-recovery.png).
+[Desktop gallery](docs/screenshots/07-real-examples.png) · [Loaded example brief](docs/screenshots/08-loaded-example.png) · [Mobile gallery](docs/screenshots/09-mobile-examples.png)
+
+Illustrative photography from Unsplash: [living room](https://images.unsplash.com/photo-1600210492486-724fe5c67fb0) and [laptop workspace](https://images.unsplash.com/photo-1516321318423-f06f85e504b3).
 
 ## Run with local Ollama
 

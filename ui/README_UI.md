@@ -6,14 +6,14 @@ The idea and brief sit side by side on desktop and stack on mobile. Start with a
 
 | Token | Color | Role |
 | --- | --- | --- |
-| Canvas | #F6F7F2 | Warm background |
+| Canvas | #F7F5FC | Canvas background |
 | Paper | #FFFFFF | Panels |
-| Ink | #16251F | Primary text |
-| Forest | #163F32 | Hero and primary actions |
-| Lime | #DAFA84 | Hero accent |
-| Mint | #E9F2E6 | Status badge and hover |
-| Muted | #52635A | Secondary text |
-| Border | #D9E2D9 | Controls and panels |
+| Ink | #211C36 | Primary text |
+| Violet | #352373 | Hero and primary actions |
+| Peach | #FFD5AB | Hero accent |
+| Lavender | #EEE7FC | Status badge and hover |
+| Muted | #625A73 | Secondary text |
+| Border | #E5DFF0 | Controls and panels |
 | Error | #912D39 | Error feedback |
 
 [Styles](public/styles.css) pair Georgia headings with system UI body text and monospace labels. Controls have visible keyboard focus, and generation status and errors are announced.
@@ -27,11 +27,10 @@ npm --prefix ui start
 
 Visit [127.0.0.1:3000](http://127.0.0.1:3000). The root [Vercel configuration](../vercel.json) serves the static demo.
 
-## Screenshots
+## Real examples
 
-- [Empty desktop workspace](../docs/screenshots/01-workspace.png)
-- [Example brief](../docs/screenshots/02-example-brief.png)
-- [Markdown export](../docs/screenshots/03-export.png)
-- [Mobile view](../docs/screenshots/04-mobile.png)
-- [Live Ollama brief](../docs/screenshots/05-local-ollama.png)
-- [Error recovery](../docs/screenshots/06-recovery.png)
+Expand a case to see an experiment you can adapt. Load an example to fill the form. If you have edited the draft, the app asks before replacing it.
+
+- [Desktop gallery](../docs/screenshots/07-real-examples.png)
+- [Loaded example brief](../docs/screenshots/08-loaded-example.png)
+- [Mobile gallery](../docs/screenshots/09-mobile-examples.png)
