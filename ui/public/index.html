@@ -1,12 +1,12 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Brief Studio — Startup planning workspace</title><link rel="stylesheet" href="./styles.css"><script type="module" src="./app.js"></script></head>
-<body><header><div class="shell nav"><a class="brand" href="./"><b>✳</b> Brief Studio</a><span id="mode" class="badge">◉ Demo workspace</span></div></header>
+<body><header><div class="shell nav"><a class="brand" href="./"><b>✳</b> Brief Studio</a><span id="mode" class="badge">◉ Live web research</span></div></header>
 <main class="shell"><section class="hero"><h1>Give your idea<br><em>a first draft.</em></h1><p>Turn a rough startup idea into a structured brief you can critique, share, and build on.</p><a class="hero-link" href="#examples">Explore real examples ↓</a></section>
 <div class="workspace" id="workspace"><section class="card"><h2>Shape your idea</h2><p>Start with the problem and who has it.</p>
 <form id="form"><label for="idea">Startup idea <small id="count">0 / 3,000</small></label><textarea id="idea" required maxlength="3000" rows="4" placeholder="An inventory assistant for independent coffee shops…"></textarea>
 <label for="extra">Additional context <small>Optional</small></label><textarea id="extra" maxlength="2000" rows="3" placeholder="Budget, audience, constraints, or what you’ve tried"></textarea>
 <div id="model-field" hidden><label for="model">Ollama model</label><select id="model"></select></div>
-<button class="primary" id="generate">Generate brief <span aria-hidden="true">↗</span></button><button type="button" id="example">Load a starter idea</button></form><p id="note" class="fine">Interactive demo · Sample content. No model call.</p></section>
+<button class="primary" id="generate">Generate brief <span aria-hidden="true">↗</span></button><button type="button" id="example">Load a starter idea</button></form><p id="note" class="fine">Uses Tavily web search to find evidence and sources.</p></section>
 <section class="card"><h2>Your startup brief</h2><p id="status" role="status">Ready when you are.</p><p id="error" role="alert" hidden></p>
 <div id="empty"><span aria-hidden="true">▤</span><h3>Make the idea tangible</h3><p>Your brief will appear here. Use it to identify assumptions and decide what to test first.</p></div>
 <div id="actions" hidden><button id="copy">Copy brief</button><button id="download">Download .md</button></div><article id="result" hidden></article></section></div>

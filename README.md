@@ -1,8 +1,8 @@
 # GenAI Startup Brief Agent · Brief Studio
 
-**[Open the interactive Vercel demo](https://genai-startup-brief-agent.vercel.app/)**
+**[Open live web research](https://genai-startup-brief-agent.vercel.app/)**
 
-Turn an early startup idea into a structured planning brief. The public demo uses sample content and makes no model calls. Run locally with Ollama for a brief tailored to your idea.
+Turn an early startup idea into a structured planning brief. The hosted app searches Tavily for evidence relevant to your idea and adds a linked source list. Local Ollama mode creates a separate model-generated draft.
 
 ![Brief Studio desktop workspace and photographed startup examples](docs/screenshots/07-real-examples.png)
 
@@ -60,6 +60,6 @@ Interactive chat includes the latest six exchanges. Type `exit` or `quit` to end
 
 ## Architecture and tests
 
-Vercel serves the static interface from `ui/public`. Locally, the loopback Express server validates the request and invokes the Python CLI with a timeout. The CLI renders `agent_startup.yaml`, calls Ollama through LangChain, and prints response text. The browser displays output as text and exports Markdown. Market claims and financial assumptions need independent verification.
+Set the optional TAVILY_API_KEY server environment variable in Vercel to use your Tavily account quota. Shared access is used by default. Vercel serves the interface from `ui/public`. Locally, the loopback Express server validates the request and invokes the Python CLI with a timeout. The CLI renders `agent_startup.yaml`, calls Ollama through LangChain, and prints response text. The browser displays output as text and exports Markdown. Market claims and financial assumptions need independent verification.
 
 See the [UI documentation](ui/README_UI.md) for design tokens. Run `python -m pytest -q` and `node --check ui/server.js` for local checks. No license has been selected.

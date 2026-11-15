@@ -1,8 +1,8 @@
 # Brief Studio UI
 
-[Open the Vercel demo](https://genai-startup-brief-agent.vercel.app/) · [Project setup](../README.md)
+[Open live web research](https://genai-startup-brief-agent.vercel.app/) · [Project setup](../README.md)
 
-The idea and brief sit side by side on desktop and stack on mobile. Start with an example or enter your own idea and context. The model selector appears when the local Ollama bridge is available. The public demo uses illustrative content.
+The idea and brief sit side by side on desktop and stack on mobile. Start with an example or enter your own idea and context. The model selector appears when the local Ollama bridge is available. The hosted app uses live Tavily search and provides clickable sources. If search fails, the previous brief stays available.
 
 | Token | Color | Role |
 | --- | --- | --- |
@@ -25,7 +25,7 @@ npm --prefix ui ci
 npm --prefix ui start
 ```
 
-Visit [127.0.0.1:3000](http://127.0.0.1:3000). The root [Vercel configuration](../vercel.json) serves the static demo.
+Visit [127.0.0.1:3000](http://127.0.0.1:3000). The root [Vercel configuration](../vercel.json) serves the interface and research endpoint.
 
 ## Real examples
 

@@ -40,18 +40,6 @@ const configReady = fetch('./api/config',{signal:AbortSignal.timeout(2500)}).the
   el('mode').textContent = '◉ Local Ollama';
   el('note').textContent = 'Uses your selected model through Ollama.';
 }).catch(() => {});
-function demo(input,notes) {
-  return [
-    ['Idea to explore',input + (notes ? '\n\nContext: ' + notes : '')],
-    ['Executive summary','This sample brief shows how to plan your next steps. Verify whether the problem is frequent, costly, and underserved.'],
-    ['Customer and problem','Pick one customer segment. Interview five prospects about how they solved the problem the last time it happened.'],
-    ['Market and alternatives','List what customers use today. Estimate the reachable market after identifying a real acquisition channel.'],
-    ['Product and business model','Offer a narrowly scoped pilot. Write down the user, buyer, recurring value, delivery cost, and assumptions behind the price.'],
-    ['Go-to-market and milestones','Recruit a handful of pilot customers. Track activation, repeat usage, and willingness to pay.'],
-    ['Financial assumptions','Model revenue as paying customers × price. Compare three scenarios and account for fixed and variable costs.'],
-    ['Risks and next experiment','Start with the riskiest assumption. Define what evidence would make you continue, change direction, or stop.']
-  ].map(([title,body]) => '## ' + title + '\n\n' + body).join('\n\n');
-}
 function show(output) {
   const article = el('result'), fragment = document.createDocumentFragment();
   for (const block of output.split(/\r?\n\s*\r?\n/)) {
@@ -64,7 +52,18 @@ function show(output) {
         fragment.append(h);
       }
       const p = document.createElement('p');
-      p.textContent = (heading ? rest : [first,...rest]).join('\n');
+      const lines = heading ? rest : [first,...rest];
+      for (const [index,line] of lines.entries()) {
+        if (index) p.append('\n');
+        const link = line.match(/^(\d+\. .+ — )(https?:\/\/\S+)$/i);
+        if (!link) { p.append(line); continue; }
+        const anchor = document.createElement('a');
+        anchor.href = link[2];
+        anchor.textContent = link[2];
+        anchor.target = '_blank';
+        anchor.rel = 'noopener noreferrer';
+        p.append(link[1],anchor);
+      }
       if (p.textContent) fragment.append(p);
     }
   }
@@ -93,9 +92,16 @@ el('form').onsubmit = async event => {
       const data = await response.json();
       if (!response.ok || typeof data.output !== 'string') throw new Error(data.error || 'Generation failed. Please retry.');
       brief = data.output;
-    } else brief = demo(input,notes);
+    } else {
+      status.textContent = 'Searching the web and compiling your brief…';
+      const response = await fetch('./api/research',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idea:input,extra:notes}),signal:AbortSignal.timeout(60000)});
+      const data = await response.json();
+      if (!response.ok || typeof data.output !== 'string') throw new Error(data.error || 'Live research failed.');
+      brief = data.output;
+      status.textContent = data.partial ? 'Research brief ready · Some topics have limited evidence' : 'Live research brief · Ready for review';
+    }
     show(brief);
-    status.textContent = local ? 'Model-generated draft · Ready for review' : 'Illustrative demo brief · Ready for review';
+    if (local) status.textContent = 'Model-generated draft · Ready for review';
   } catch (error) {
     el('error').textContent = error.name === 'TimeoutError' ? 'Generation timed out. Try a smaller model.' : error.message;
     el('error').hidden = false;
