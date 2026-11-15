@@ -1,170 +1,65 @@
-# GenAI Startup Brief Agent
+# GenAI Startup Brief Agent · Brief Studio
 
-![GenAI Startup Brief Agent project overview](docs/project-overview.svg)
+**[Open the interactive Vercel demo](https://genai-startup-brief-agent.vercel.app/)**
 
-**Turn a startup idea into a structured business brief with LangChain and Ollama.**
+Turn an early startup idea into a structured planning brief. The public demo uses sample content and makes no model calls. Run locally with Ollama for a brief tailored to your idea.
 
-A Python generative AI prototype with a browser interface and command-line entry points. Enter an idea, add context, select an Ollama model, and request a brief covering customers, competition, monetization, go-to-market strategy, risks, and financial assumptions.
-
-**Project type:** Generative AI / LLM application  
-**Stack:** Python · LangChain · Ollama · Node.js · Express · HTML/CSS/JavaScript
+![Desktop workspace](docs/screenshots/01-workspace.png)
 
 ## Features
 
-- Startup brief generation from a single idea and optional additional details.
-- A prompt requesting 15 sections, including a Business Model Canvas and three-year financial projections with sensitivity analysis.
-- Browser UI backed by an Express endpoint that launches the Python CLI.
-- Dedicated startup CLI plus general single-prompt and interactive chat entry points.
-- Model choices exposed by the CLIs: `llama3.2:latest`, `minimax-m2.5:cloud`, and `kimi-k2.5:cloud`. Availability depends on your Ollama instance and account.
-- Deterministic stub output when the LangChain prompt or Ollama integration dependencies are missing.
-- Model availability validation and configurable connection retries.
+- Enter an idea and optional audience, budget, or launch constraints, or prefill the form with an example.
+- Generate a brief covering customers, competition, business model, go-to-market, financial assumptions, and risks. The local prompt requests 15 sections.
+- Copy the brief or download Markdown. A failed request keeps the previous brief available.
+- Generate a brief from the terminal or use the general chat CLI.
 
-## Project visual
+## Screenshots
 
-The image above is a project overview illustration, not a screenshot or a sample generated result.
+| Example brief | Markdown export |
+| --- | --- |
+| ![Example brief](docs/screenshots/02-example-brief.png) | ![Markdown export](docs/screenshots/03-export.png) |
 
-## Architecture
+[Mobile workspace](docs/screenshots/04-mobile.png) · [Live Ollama brief](docs/screenshots/05-local-ollama.png) · [Error recovery](docs/screenshots/06-recovery.png).
 
-```mermaid
-flowchart LR
-    U[Startup idea and context] --> W[Browser UI]
-    W --> E[Express: POST /api/startup-brief]
-    E --> C[Python startup CLI]
-    T[agent_startup.yaml] --> C
-    C --> P[LangChain prompt]
-    P --> O[ChatOllama]
-    O --> M[Ollama model]
-    M --> R[Generated brief]
-    R --> W
-```
+## Run with local Ollama
 
-`src/startup_prompt.py` loads the prompt from `agent_startup.yaml`, with a fallback if the file or marker is missing. `src/agent.py` composes a system/human prompt with `ChatOllama` at temperature zero. The UI server invokes `src/startup_agent_cli.py` and returns its stdout to the browser.
-
-Despite the historical agent name, the current implementation is a prompt-to-model runnable; it does not implement autonomous tool calling, web research, retrieval, or a multi-agent workflow.
-
-## Getting started
-
-### Prerequisites
-
-- Python 3.10 or later.
-- Node.js and npm for the browser UI.
-- Ollama running with a model available under its exact tag.
-- The existing UI launcher expects a Windows virtual environment at `.venv/Scripts/python.exe`.
-
-### Install on Windows (PowerShell)
+Prerequisites: Python 3.10+, Node.js 22+, npm, and a running Ollama instance. From the repository root on Windows:
 
 ```powershell
-git clone https://github.com/vams2krish/GenAI-Startup-Brief-Agent.git
-cd GenAI-Startup-Brief-Agent
 python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
-python -m pip install -r test_requirements.txt
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt -r test_requirements.txt
 npm --prefix ui ci
 ollama pull llama3.2:latest
+npm --prefix ui start
 ```
 
-Ensure Ollama is running before generation. Run `ollama serve` in a separate terminal if it is not already running as an application/service.
+On macOS or Linux, use `.venv/bin/python` instead. Open [127.0.0.1:3000](http://127.0.0.1:3000). Start `ollama serve` if Ollama is not running. Pull the exact model tag you intend to use. Cloud model tags require Ollama account access and can send prompts off-device.
 
-### Configuration
+| Setting | Purpose |
+| --- | --- |
+| `OLLAMA_HOST` | Model endpoint; defaults to `http://localhost:11434`. |
+| `OLLAMA_MODEL_LIST_RETRIES` | Availability attempts; default 5. |
+| `OLLAMA_MODEL_LIST_RETRY_SLEEP_SECONDS` | Delay between attempts; default 1 second. |
+| `SKIP_OLLAMA_MODEL_VALIDATION` | Set to 1 to skip model availability validation. |
+| `PORT` | Local web port; default 3000. |
+| `PYTHON_EXEC` | Override the Python interpreter used by Express. |
+
+Use `.env.example` for Python settings. Set Node variables in the shell that starts the server.
+
+## CLI
+
+With the environment active:
 
 ```powershell
-Copy-Item .env.example .env
+python src/startup_agent_cli.py --idea "A scheduling assistant for independent fitness coaches"
+python src/agent_cli.py --prompt "Explain product-market fit"
+python src/agent_cli.py --interactive
 ```
 
-| Variable | Default | Purpose |
-| --- | --- | --- |
-| `OLLAMA_HOST` | `http://localhost:11434` | Ollama endpoint; used by validation and the Ollama client environment. |
-| `OLLAMA_MODEL_LIST_RETRIES` | `5` | Connection attempts during model validation. |
-| `OLLAMA_MODEL_LIST_RETRY_SLEEP_SECONDS` | `1` | Delay between validation attempts. |
-| `SKIP_OLLAMA_MODEL_VALIDATION` | unset | Set to `1` to bypass the availability check; inference still requires Ollama. |
-| `PORT` | `3000` | Express server port; set it in the shell that starts Node. |
+Interactive chat includes the latest six exchanges. Type `exit` or `quit` to end.
 
-The Python CLIs load `.env`. The Node server reads its process environment. An OpenAI API key is not used by the current implementation. Keep local configuration and secrets out of Git.
+## Architecture and tests
 
-### Browser interface
+Vercel serves the static interface from `ui/public`. Locally, the loopback Express server validates the request and invokes the Python CLI with a timeout. The CLI renders `agent_startup.yaml`, calls Ollama through LangChain, and prints response text. The browser displays output as text and exports Markdown. Market claims and financial assumptions need independent verification.
 
-Start from the **repository root** so the server resolves the Python executable and script correctly:
-
-```powershell
-node ui/server.js
-```
-
-Open [localhost:3000](http://localhost:3000), enter your startup idea and any extra context, choose a model, and submit the form.
-
-### Startup brief CLI
-
-```powershell
-python src/startup_agent_cli.py --idea "A scheduling assistant for independent fitness coaches" --model llama3.2:latest
-```
-
-### General chat CLI
-
-```powershell
-python src/agent_cli.py --prompt "Explain product-market fit" --model llama3.2:latest
-python src/agent_cli.py --interactive --model llama3.2:latest
-```
-
-Type `exit` or `quit` to end interactive mode. Exchanges are accumulated locally but are not included in subsequent model prompts.
-
-## Brief contents
-
-The prompt requests executive summary; startup idea; problem statement; target customers and personas; market sizing and trends; competition; differentiation; product and solution; nine-block Business Model Canvas; monetization; go-to-market strategy; metrics and milestones; three-year financial projections and sensitivity; risks and mitigations; and exit strategies.
-
-These are model-generated drafts. There is no live source retrieval or numerical validation, so market claims, competitor details, and financial projections need independent verification.
-
-## Repository layout
-
-```text
-.
-├── README.md
-├── .env.example
-├── .gitignore
-├── agent_startup.yaml       # Editable business brief prompt
-├── requirements.txt        # Python runtime dependencies
-├── test_requirements.txt   # Test dependencies
-├── pyproject.toml          # Python project metadata
-├── conftest.py
-├── docs/project-overview.svg
-├── src/
-│   ├── agent.py            # Ollama validation and runnable factory
-│   ├── agent_cli.py        # General chat CLI
-│   ├── startup_agent_cli.py
-│   ├── startup_prompt.py   # Prompt loading and rendering
-│   ├── logging_config.py   # Optional logging configuration helper
-│   └── tests/test_agent.py
-└── ui/
-    ├── index.html          # Browser interface
-    ├── server.js           # Express and Python process bridge
-    ├── package.json
-    ├── package-lock.json
-    └── README_UI.md
-```
-
-## Validation
-
-```powershell
-python -m pytest -q
-node --check ui/server.js
-```
-
-The existing unit test checks that the agent can be constructed while model validation is patched out. It does not test live inference, response quality, or the browser-to-model flow.
-
-## Current limitations and troubleshooting
-
-- **Model missing / connection failure:** check `ollama list`, pull the exact model tag, and verify `OLLAMA_HOST`.
-- **`[stub]` output:** required LangChain/Ollama dependencies were not imported; install the runtime requirements in the interpreter you are using.
-- **UI launch directory:** use `node ui/server.js` from the root. Running `npm start` inside `ui` makes the current server resolve the wrong Python and script paths.
-- **Platform support:** the Python code can run on other platforms, but the UI process launcher currently hardcodes the Windows virtual environment layout and has no implemented system-Python fallback.
-- **Response handling:** the interactive chat path assumes a dictionary result even though the full runnable returns an AI message; it needs normalization for reliable interactive use. The startup CLI prints the raw message representation rather than extracting only its text.
-- **Server hardening:** authentication, request timeouts, robust subprocess error handling, and deployment controls are not implemented. Use as a local development prototype.
-- **Logging:** the CLIs use Loguru; file rotation is available in `configure_logging()` but the current entry points do not call that helper.
-- Dependencies use lower bounds rather than a fully pinned Python lockfile.
-
-## Customization
-
-Edit `agent_startup.yaml` to change the requested brief sections. Keep the `startup_brainstorm_prompt: |` field and `{idea}` placeholder. Add model options consistently in the CLI argument choices and browser selector. Extend `build_agent()` to introduce additional prompt behavior or an actual tool-calling runtime.
-
-## License
-
-No license has been selected for this repository. Add a license before distributing it under specific reuse terms.
+See the [UI documentation](ui/README_UI.md) for design tokens. Run `python -m pytest -q` and `node --check ui/server.js` for local checks. No license has been selected.

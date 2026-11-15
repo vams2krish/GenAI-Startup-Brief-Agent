@@ -73,7 +73,7 @@ def _validate_ollama_model_exists(*, model_name: str) -> None:
 
     existing_names = set()
     for m in models_resp.get("models", []):
-        name = m.get("name")
+        name = m.get("model") or m.get("name")
         if name:
             existing_names.add(name)
 
@@ -129,7 +129,8 @@ def build_agent(*, model_name: str = "llama3.2:latest") -> object:
 
     _validate_ollama_model_exists(model_name=model_name)
 
-    llm = ChatOllama(model=model_name, temperature=0)
+    import os
+    llm = ChatOllama(model=model_name, temperature=0, base_url=os.getenv("OLLAMA_HOST") or None)
 
     prompt = ChatPromptTemplate.from_messages(
         [
@@ -156,3 +157,15 @@ def build_agent(*, model_name: str = "llama3.2:latest") -> object:
 
 
 
+
+def response_text(result: object) -> str:
+    """Normalize LangChain messages and the local stub."""
+    if isinstance(result, dict):
+        result = result.get("output", "")
+    content = getattr(result, "content", result)
+    if isinstance(content, list):
+        return "\n".join(item if isinstance(item, str) else item["text"]
+                         for item in content
+                         if isinstance(item, str) or
+                         (isinstance(item, dict) and isinstance(item.get("text"), str)))
+    return str(content).strip() if content is not None else ""

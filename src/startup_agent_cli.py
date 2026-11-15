@@ -5,7 +5,7 @@ import argparse
 from dotenv import load_dotenv
 from loguru import logger
 
-from agent import build_agent
+from agent import _LocalAgentStub, build_agent, response_text
 from startup_prompt import get_startup_prompt_template
 
 
@@ -14,6 +14,7 @@ def main() -> None:
     parser.add_argument("--idea", type=str, required=True, help="Startup idea / concept")
     model_choices = [
         "llama3.2:latest",
+        "qwen2.5:0.5b",
         "minimax-m2.5:cloud",
         "kimi-k2.5:cloud",
     ]
@@ -36,22 +37,17 @@ def main() -> None:
         logger.error("startup_agent_failed | {}", str(e).replace("\n", " | "))
         raise
 
+    if isinstance(executor, _LocalAgentStub):
+        parser.exit(1, "Install the Python runtime requirements to generate a brief.\n")
+
     prompt = get_startup_prompt_template().render(idea=args.idea)
 
     logger.info("startup_brief | model={} | idea_len={}", args.model, len(args.idea))
 
     result = executor.invoke(prompt)
 
-    # Our runnable may return dict or a raw response depending on LangChain version.
-
-    if isinstance(result, dict):
-        output = result.get("output", result)
-    else:
-        output = result
-
-    print(output)
+    print(response_text(result))
 
 
 if __name__ == "__main__":
     main()
-

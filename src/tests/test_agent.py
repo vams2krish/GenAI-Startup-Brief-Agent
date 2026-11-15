@@ -15,3 +15,12 @@ def test_agent_builds_without_calling_model(monkeypatch):
 
 
 
+
+
+def test_response_text_handles_langchain_content_blocks():
+    from types import SimpleNamespace
+    from src.agent import response_text
+
+    message = SimpleNamespace(content=[{"type": "text", "text": "Brief"}, {"type": "image"}, "Next steps"])
+    assert response_text(message) == "Brief\nNext steps"
+    assert response_text({"output": "Sample"}) == "Sample"

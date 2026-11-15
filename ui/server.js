@@ -1,81 +1,29 @@
 import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { spawn } from 'child_process';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { execFile } from 'node:child_process';
+import { existsSync } from 'node:fs';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
+const here = path.dirname(fileURLToPath(import.meta.url));
+const root = path.dirname(here);
+const bundled = path.join(root, '.venv', ... (process.platform === 'win32' ? ['Scripts','python.exe'] : ['bin','python']));
+const python = process.env.PYTHON_EXEC || (existsSync(bundled) ? bundled : process.platform === 'win32' ? 'python' : 'python3');
+const models = ['llama3.2:latest','qwen2.5:0.5b','minimax-m2.5:cloud','kimi-k2.5:cloud'];
 const app = express();
-app.use(express.json({ limit: '1mb' }));
-
-// Serve UI
-app.use(express.static(path.join(__dirname)));
-app.get('/', (_req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-app.post('/api/startup-brief', async (req, res) => {
-  const { idea, extra, model } = req.body || {};
-
-  if (!idea || !String(idea).trim()) {
-    res.status(400).json({ error: 'Missing idea' });
-    return;
+app.use(express.json({limit:'32kb'}));
+app.use(express.static(path.join(here,'public')));
+app.get('/api/config', (_, res) => res.json({models}));
+app.post('/api/startup-brief', (req,res) => {
+  const {idea, extra = '', model = models[0]} = req.body ?? {};
+  if (typeof idea !== 'string' || !idea.trim() || idea.length > 3000 || typeof extra !== 'string' || extra.length > 2000 || !models.includes(model)) {
+    return res.status(400).json({error:'Enter a startup idea of up to 3,000 characters and choose an available model.'});
   }
-
-  const mergedIdea = [String(idea).trim(), String(extra || '').trim()]
-    .filter(Boolean)
-    .join('\n\nExtra details:\n');
-
-  // Resolve repo root when started from `langchain-agent-chat/`.
-  const repoRoot = process.cwd();
-
-  // Prefer a project-local venv, but fall back to system python.
-  // - Expected: <repoRoot>/.venv/Scripts/python.exe
-  // - Fallback: `python` (should be on PATH)
-  const localPython = path.join(repoRoot, '.venv', 'Scripts', 'python.exe');
-
-  const PYTHON_EXEC = localPython;
-  const startupCliPath = path.join(repoRoot, 'src', 'startup_agent_cli.py');
-
-
-
-
-
-  const py = spawn(
-    PYTHON_EXEC,
-    [startupCliPath, '--idea', mergedIdea, '--model', model || 'llama3.2:latest'],
-    {
-      windowsHide: true,
-      cwd: repoRoot,
-    }
-  );
-
-
-
-
-  let stdout = '';
-  let stderr = '';
-
-  py.stdout.on('data', (d) => {
-    stdout += d.toString('utf8');
-  });
-
-  py.stderr.on('data', (d) => {
-    stderr += d.toString('utf8');
-  });
-
-  py.on('close', (code) => {
-    if (code !== 0) {
-      res.status(500).json({ error: stderr || `Python exited with code ${code}` });
-      return;
-    }
-    res.json({ output: stdout.trim() });
+  const input = [idea.trim(), extra.trim() && 'Additional context:\n' + extra.trim()].filter(Boolean).join('\n\n');
+  execFile(python,['-X','utf8',path.join(root,'src','startup_agent_cli.py'),'--model',model,'--idea='+input],{cwd:root,windowsHide:true,timeout:180000,maxBuffer:1024*1024},(error, stdout) => {
+    if (error) return res.status(error.killed ? 504 : 502).json({error:error.killed ? 'Generation timed out. Try a smaller model.' : 'Generation failed. Check that Ollama is running, the model is installed, and Python requirements are installed.'});
+    if (!stdout.trim()) return res.status(502).json({error:'The model returned an empty brief. Please retry.'});
+    res.json({output:stdout.trim()});
   });
 });
-
-const port = process.env.PORT ? Number(process.env.PORT) : 3000;
-app.listen(port, () => {
-  console.log(`UI running: http://localhost:${port}`);
-});
-
+app.use((error,req,res,next) => res.status(error.status === 413 ? 413 : 400).json({error:'The request is too large or contains invalid JSON.'}));
+app.listen(Number(process.env.PORT || 3000),'127.0.0.1', () => console.log('Startup Brief Studio running on http://127.0.0.1:' + (process.env.PORT || 3000)));
